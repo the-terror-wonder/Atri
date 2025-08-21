@@ -1,16 +1,26 @@
 import express from 'express';
 import 'dotenv/config';
 import connectDB from './config/db.js';
+import userRoutes from './routes/userRoutes.js';
 
 // Connect to the database
 connectDB();
 
 const app = express();
 
+// Body parser middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
 const PORT = process.env.PORT || 5000;
 
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
+
+// Mount the user routes
+app.use('/api/users', userRoutes);
+
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
