@@ -22,10 +22,9 @@ const userSchema = new mongoose.Schema({
     default: 'student',
   }
 }, {
-  timestamps: true, // Automatically adds createdAt and updatedAt fields
+  timestamps: true,
 });
 
-// Hash the password before saving the user to the database
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     next();
