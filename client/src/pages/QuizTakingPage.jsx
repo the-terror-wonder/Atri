@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom'; // CORRECTED: Added 'Link'
 import API from '../services/api';
 import { toast } from 'react-toastify';
 
@@ -7,6 +7,7 @@ const QuizTakingPage = () => {
   const [quiz, setQuiz] = useState(null);
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
+  const [result, setResult] = useState(null); // CORRECTED: Added this state for the result
   const { id: quizId } = useParams();
 
   useEffect(() => {
@@ -30,16 +31,34 @@ const QuizTakingPage = () => {
     });
   };
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    // For now, we'll just log the answers.
-    // In the next step, we will submit this to the backend.
-    console.log('Final Answers:', answers);
-    toast.info('Quiz submission logic will be implemented next!');
+    try {
+      const { data } = await API.post(`/api/quizzes/${quizId}/submit`, { answers });
+      setResult(data);
+      toast.success('Quiz submitted successfully!');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to submit quiz.');
+    }
   };
 
   if (loading) return <div>Loading Quiz...</div>;
   if (!quiz) return <div>Quiz not found.</div>;
+
+  if (result) {
+    return (
+      <div className="max-w-3xl mx-auto text-center p-8 bg-white rounded-lg shadow-md">
+        <h1 className="text-4xl font-bold text-gray-800">Quiz Completed!</h1>
+        <p className="text-2xl mt-4">Your Score:</p>
+        <p className="text-6xl font-bold my-4 text-indigo-600">
+          {result.score} / {result.totalQuestions}
+        </p>
+        <Link to={`/classroom/${quiz.classroom}`} className="inline-block mt-6 px-6 py-3 font-semibold text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
+          Back to Classroom
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto">

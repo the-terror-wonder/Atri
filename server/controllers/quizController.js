@@ -1,5 +1,6 @@
 import Quiz from '../models/Quiz.js';
 import Classroom from '../models/Classroom.js';
+import QuizSubmission from '../models/QuizSubmission.js'; 
 
 // @desc    Create a quiz for a classroom
 // @route   POST /api/classrooms/:classroomId/quizzes
@@ -30,6 +31,45 @@ const createQuiz = async (req, res) => {
   }
 };
 
+// @desc    Submit a quiz and get the score
+// @route   POST /api/quizzes/:id/submit
+// @access  Private/Student
+const submitQuiz = async (req, res) => {
+  const { answers } = req.body;
+  const quizId = req.params.id;
+
+  const quiz = await Quiz.findById(quizId);
+
+  if (!quiz) {
+    res.status(404);
+    throw new Error('Quiz not found');
+  }
+
+  // Calculate score
+  let score = 0;
+  quiz.questions.forEach((question) => {
+    // Check if the student's answer for this question matches the correct answer
+    if (answers[question._id.toString()] === question.correctAnswer) {
+      score++;
+    }
+  });
+
+  // Save the submission
+  const submission = await QuizSubmission.create({
+    quiz: quizId,
+    student: req.user._id,
+    answers,
+    score,
+    totalQuestions: quiz.questions.length,
+  });
+
+  res.status(201).json({
+    message: 'Quiz submitted successfully!',
+    score: submission.score,
+    totalQuestions: submission.totalQuestions,
+  });
+};
+
 // @desc    Get all quizzes for a classroom
 // @route   GET /api/classrooms/:classroomId/quizzes
 // @access  Private
@@ -51,4 +91,4 @@ const getQuizById = async (req, res) => {
   }
 };
 
-export { createQuiz, getQuizzesForClassroom,getQuizById };
+export { createQuiz, getQuizzesForClassroom,getQuizById,submitQuiz };
