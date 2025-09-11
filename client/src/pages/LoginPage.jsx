@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState ,useContext} from 'react';
+
 import { Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
+import AuthContext from '../context/AuthContext';
 import { toast } from 'react-toastify';
 
 const LoginPage = () => {
@@ -8,14 +10,15 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
       const { data } = await API.post('/api/users/login', { email, password });
+      login(data);
       toast.success('Logged in successfully!');
-      // We will save user info to global state here later
-      navigate('/'); // Redirect to homepage after successful login
+      navigate('/');
     } catch (err) {
       toast.error(err.response?.data?.message || 'An error occurred');
     }
