@@ -1,5 +1,6 @@
 import Assignment from '../models/Assignment.js';
 import Classroom from '../models/Classroom.js';
+import AssignmentSubmission from '../models/AssignmentSubmission.js';
 
 // @desc    Create an assignment for a classroom
 // @route   POST /api/classrooms/:classroomId/assignments
@@ -44,4 +45,38 @@ const getAssignmentsForClassroom = async (req, res) => {
   res.json(assignments);
 };
 
-export { createAssignment, getAssignmentsForClassroom };
+// @desc    Submit an assignment
+// @route   POST /api/assignments/:id/submit
+// @access  Private/Student
+const submitAssignment = async (req, res) => {
+  const { submissionContent } = req.body;
+  const assignmentId = req.params.id;
+
+  const assignment = await Assignment.findById(assignmentId);
+
+  if (assignment) {
+    // Check if the student has already submitted
+    const existingSubmission = await AssignmentSubmission.findOne({
+      assignment: assignmentId,
+      student: req.user._id,
+    });
+
+    if (existingSubmission) {
+      res.status(400);
+      throw new Error('You have already submitted this assignment');
+    }
+
+    const submission = await AssignmentSubmission.create({
+      assignment: assignmentId,
+      student: req.user._id,
+      submissionContent,
+    });
+
+    res.status(201).json({ message: 'Assignment submitted successfully', submission });
+  } else {
+    res.status(404);
+    throw new Error('Assignment not found');
+  }
+};
+
+export { createAssignment, getAssignmentsForClassroom , submitAssignment };
