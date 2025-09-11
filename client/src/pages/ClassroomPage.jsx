@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import API from '../services/api';
 import { toast } from 'react-toastify';
 import AssignmentSection from '../components/AssignmentSection';
+import QuizSection from '../components/QuizSection';
 
 const ClassroomPage = () => {
   const [classroom, setClassroom] = useState(null);
@@ -40,10 +41,8 @@ const ClassroomPage = () => {
         
         <AssignmentSection classroomId={classroomId} />
 
-        <div className="p-6 bg-white rounded-lg shadow-md">
-          <h2 className="text-2xl font-semibold mb-4">Quizzes</h2>
-          {/* We'll build the QuizSection next */}
-        </div>
+        <QuizSection classroomId={classroomId} />
+        
       </div>
     </div>
   );
