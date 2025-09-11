@@ -4,6 +4,7 @@ import API from '../services/api';
 import { toast } from 'react-toastify';
 import AssignmentSection from '../components/AssignmentSection';
 import QuizSection from '../components/QuizSection';
+import StudentManagementSection from '../components/StudentManagementSection';
 
 const ClassroomPage = () => {
   const [classroom, setClassroom] = useState(null);
@@ -32,16 +33,22 @@ const ClassroomPage = () => {
     return <div>Classroom not found.</div>;
   }
 
+  const handleStudentEnrolled = (updatedClassroom) => {
+    setClassroom(updatedClassroom);
+  };
+
   return (
     <div>
       <h1 className="text-4xl font-bold mb-4">{classroom.name}</h1>
-      <p className="text-gray-600 mb-8">Manage your assignments and quizzes for this class.</p>
+      <p className="text-gray-600 mb-8">Manage your assignments, quizzes, and students for this class.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         
         <AssignmentSection classroomId={classroomId} />
 
         <QuizSection classroomId={classroomId} />
+
+        <StudentManagementSection classroom={classroom} onStudentEnrolled={handleStudentEnrolled} />
         
       </div>
     </div>

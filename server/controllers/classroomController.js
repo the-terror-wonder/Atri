@@ -79,7 +79,7 @@ const getMyClassrooms = async (req, res) => {
 // @route   GET /api/classrooms/:id
 // @access  Private
 const getClassroomById = async (req, res) => {
-  const classroom = await Classroom.findById(req.params.id);
+  const classroom = await Classroom.findById(req.params.id).populate('students', 'name email');
 
   if (classroom) {
     // We should also add a check here to make sure the user is part of this class
