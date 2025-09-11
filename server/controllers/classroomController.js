@@ -41,11 +41,29 @@ const enrollStudent = async (req, res) => {
 
     classroom.students.push(student._id);
     await classroom.save();
-    res.json(classroom);
+
+    const populatedClassroom = await Classroom.findById(classroom._id).populate(
+      'students',
+      'name email'
+    );
+    res.json(populatedClassroom);
   } else {
     res.status(404);
     throw new Error('Classroom not found');
   }
+};
+
+// @desc    Get all classrooms a student is enrolled in
+// @route   GET /api/classrooms/enrolled
+// @access  Private/Student
+const getEnrolledClassrooms = async (req, res) => {
+  const classrooms = await Classroom.find({
+    students: req.user._id
+  }).populate(
+    'faculty',
+    'name'
+  );
+  res.json(classrooms);
 };
 
 // @desc    Create a new classroom
@@ -94,5 +112,6 @@ export {
   createClassroom,
   getMyClassrooms,
   getClassroomById,
-  enrollStudent
+  enrollStudent,
+  getEnrolledClassrooms
 };
