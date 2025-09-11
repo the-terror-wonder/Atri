@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import API from '../services/api';
 import { toast } from 'react-toastify';
+import AssignmentSection from '../components/AssignmentSection';
 
 const ClassroomPage = () => {
   const [classroom, setClassroom] = useState(null);
@@ -36,14 +37,12 @@ const ClassroomPage = () => {
       <p className="text-gray-600 mb-8">Manage your assignments and quizzes for this class.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* We will build these components next */}
-        <div className="p-6 bg-white rounded-lg shadow-md">
-          <h2 className="text-2xl font-semibold mb-4">Assignments</h2>
-          {/* Assignment list and creation form will go here */}
-        </div>
+        
+        <AssignmentSection classroomId={classroomId} />
+
         <div className="p-6 bg-white rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold mb-4">Quizzes</h2>
-          {/* Quiz list and creation form will go here */}
+          {/* We'll build the QuizSection next */}
         </div>
       </div>
     </div>
