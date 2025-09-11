@@ -38,4 +38,17 @@ const getQuizzesForClassroom = async (req, res) => {
   res.json(quizzes);
 };
 
-export { createQuiz, getQuizzesForClassroom };
+// @desc    Get a single quiz by ID
+// @route   GET /api/quizzes/:id
+// @access  Private
+const getQuizById = async (req, res) => {
+  const quiz = await Quiz.findById(req.params.id);
+  if (quiz) {
+    res.json(quiz);
+  } else {
+    res.status(404);
+    throw new Error('Quiz not found');
+  }
+};
+
+export { createQuiz, getQuizzesForClassroom,getQuizById };

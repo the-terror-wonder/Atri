@@ -12,6 +12,7 @@ import HomePage from "./pages/HomePage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import ClassroomPage from "./pages/ClassroomPage";
+import QuizTakingPage from './pages/QuizTakingPage';
 import LoginPage from "./pages/LoginPage.jsx";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/routing/ProtectedRoute.jsx";
@@ -37,6 +38,14 @@ const router = createBrowserRouter(
             <ClassroomPage />
           </ProtectedRoute>
         }
+      />
+      <Route 
+        path='/quiz/:id' 
+        element={
+          <ProtectedRoute>
+            <QuizTakingPage />
+          </ProtectedRoute>
+        } 
       />
     </Route>
   )

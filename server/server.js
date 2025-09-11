@@ -5,6 +5,7 @@ import connectDB from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import userRoutes from './routes/userRoutes.js';
 import classroomRoutes from './routes/classroomRoutes.js';
+import quizApiRoutes from './routes/quizApiRoutes.js';
 
 connectDB();
 
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/users', userRoutes);
 app.use('/api/classrooms', classroomRoutes);
+app.use('/api/quizzes', quizApiRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

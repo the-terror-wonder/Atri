@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router({ mergeParams: true });
-import { createQuiz, getQuizzesForClassroom } from '../controllers/quizController.js';
+import { createQuiz, getQuizzesForClassroom,getQuizById } from '../controllers/quizController.js';
 import { protect, authorize } from '../middleware/authMiddleware.js';
 
 router.route('/')
