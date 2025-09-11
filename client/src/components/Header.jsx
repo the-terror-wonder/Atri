@@ -22,6 +22,7 @@ const Header = () => {
         <nav>
           {userInfo ? (
             <div className="flex items-center space-x-4">
+              <Link to="/dashboard" className="font-semibold">Dashboard</Link>
               <span className="font-semibold">Welcome, {userInfo.name}</span>
               <button
                 onClick={logoutHandler}

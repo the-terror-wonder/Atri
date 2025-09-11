@@ -4,9 +4,11 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } 
 import App from './App.jsx';
 import './index.css';
 import HomePage from './pages/HomePage.jsx';
+import DashboardPage from './pages/DashboardPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import { AuthProvider } from './context/AuthContext'; 
+import ProtectedRoute from './components/routing/ProtectedRoute.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -14,6 +16,14 @@ const router = createBrowserRouter(
       <Route index={true} path='/' element={<HomePage />} />
       <Route path='/register' element={<RegisterPage />} />
       <Route path='/login' element={<LoginPage />} /> 
+    <Route 
+        path='/dashboard' 
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        } 
+      />
     </Route>
   )
 );
