@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import AuthContext from '../context/AuthContext';
-import { toast } from 'react-toastify';
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 const Header = () => {
   const { userInfo, logout } = useContext(AuthContext);
@@ -9,8 +9,8 @@ const Header = () => {
 
   const logoutHandler = () => {
     logout();
-    toast.success('Logged out successfully');
-    navigate('/login');
+    toast.success("Logged out successfully");
+    navigate("/login");
   };
 
   return (
@@ -20,9 +20,19 @@ const Header = () => {
           Atri 🌿
         </Link>
         <nav>
+          {userInfo && userInfo.role === "student" && (
+            <Link to="/my-submissions" className="font-semibold">
+              My Submissions
+            </Link>
+          )}
+          <Link to="/dashboard" className="font-semibold">
+            Dashboard
+          </Link>
           {userInfo ? (
             <div className="flex items-center space-x-4">
-              <Link to="/dashboard" className="font-semibold">Dashboard</Link>
+              <Link to="/dashboard" className="font-semibold">
+                Dashboard
+              </Link>
               <span className="font-semibold">Welcome, {userInfo.name}</span>
               <button
                 onClick={logoutHandler}
@@ -36,7 +46,10 @@ const Header = () => {
               <Link to="/login" className="hover:text-gray-300">
                 Sign In
               </Link>
-              <Link to="/register" className="bg-indigo-600 hover:bg-indigo-700 px-3 py-2 rounded">
+              <Link
+                to="/register"
+                className="bg-indigo-600 hover:bg-indigo-700 px-3 py-2 rounded"
+              >
                 Sign Up
               </Link>
             </div>
