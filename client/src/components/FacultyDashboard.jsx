@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import API from '../services/api';
-import { toast } from 'react-toastify';
+import React, { useState, useEffect } from "react";
+import API from "../services/api";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const FacultyDashboard = () => {
   const [classrooms, setClassrooms] = useState([]);
-  const [newClassName, setNewClassName] = useState('');
+  const [newClassName, setNewClassName] = useState("");
 
   // This function will run once when the component loads
   useEffect(() => {
     const fetchClassrooms = async () => {
       try {
-        const { data } = await API.get('/api/classrooms');
+        const { data } = await API.get("/api/classrooms");
         setClassrooms(data);
       } catch (error) {
-        toast.error('Could not fetch classrooms.');
+        toast.error("Could not fetch classrooms.");
       }
     };
 
@@ -23,27 +24,27 @@ const FacultyDashboard = () => {
   const createClassroomHandler = async (e) => {
     e.preventDefault();
     if (!newClassName.trim()) {
-      toast.error('Classroom name cannot be empty.');
+      toast.error("Classroom name cannot be empty.");
       return;
     }
 
     try {
-      const { data: newClassroom } = await API.post('/api/classrooms', {
+      const { data: newClassroom } = await API.post("/api/classrooms", {
         name: newClassName,
       });
       // Add the new classroom to our existing list to update the UI instantly
       setClassrooms([...classrooms, newClassroom]);
-      setNewClassName(''); // Clear the input field
-      toast.success('Classroom created successfully!');
+      setNewClassName(""); // Clear the input field
+      toast.success("Classroom created successfully!");
     } catch (error) {
-      toast.error('Failed to create classroom.');
+      toast.error("Failed to create classroom.");
     }
   };
 
   return (
     <div>
       <h1 className="text-3xl font-bold mb-6">Faculty Dashboard</h1>
-      
+
       {/* Create Classroom Form */}
       <div className="mb-8 p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold mb-4">Create a New Classroom</h2>
@@ -70,15 +71,26 @@ const FacultyDashboard = () => {
         <div className="space-y-4">
           {classrooms.length > 0 ? (
             classrooms.map((classroom) => (
-              <div key={classroom._id} className="p-4 bg-white rounded-lg shadow-md flex justify-between items-center">
-                <h3 className="text-xl font-medium">{classroom.name}</h3>
-                <span className="text-sm text-gray-500">
-                  {classroom.students.length} Student(s)
-                </span>
-              </div>
+              <Link
+                key={classroom._id}
+                to={`/classroom/${classroom._id}`}
+                className="block p-4 bg-white rounded-lg shadow-md hover:bg-gray-50 transition-colors"
+              >
+                <div
+                  key={classroom._id}
+                  className="p-4 bg-white rounded-lg shadow-md flex justify-between items-center"
+                >
+                  <h3 className="text-xl font-medium">{classroom.name}</h3>
+                  <span className="text-sm text-gray-500">
+                    {classroom.students.length} Student(s)
+                  </span>
+                </div>
+              </Link>
             ))
           ) : (
-            <p className="text-gray-500">You have not created any classrooms yet.</p>
+            <p className="text-gray-500">
+              You have not created any classrooms yet.
+            </p>
           )}
         </div>
       </div>

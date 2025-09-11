@@ -23,4 +23,19 @@ const getMyClassrooms = async (req, res) => {
   res.json(classrooms);
 };
 
-export { createClassroom, getMyClassrooms };
+// @desc    Get a single classroom by ID
+// @route   GET /api/classrooms/:id
+// @access  Private
+const getClassroomById = async (req, res) => {
+  const classroom = await Classroom.findById(req.params.id);
+
+  if (classroom) {
+    // We should also add a check here to make sure the user is part of this class
+    res.json(classroom);
+  } else {
+    res.status(404);
+    throw new Error('Classroom not found');
+  }
+};
+
+export { createClassroom, getMyClassrooms,getClassroomById };
