@@ -1,5 +1,7 @@
 import Classroom from '../models/Classroom.js';
 import User from '../models/User.js';
+import Assignment from '../models/Assignment.js';
+import Quiz from '../models/Quiz.js';        
 
 
 // @desc    Enroll a student in a classroom
@@ -108,10 +110,39 @@ const getClassroomById = async (req, res) => {
   }
 };
 
+
+// @desc    Get all classrooms
+// @route   GET /api/classrooms/all
+// @access  Private/Admin
+const getAllClassrooms = async (req, res) => {
+  const classrooms = await Classroom.find({}).populate('faculty', 'name email');
+  res.json(classrooms);
+};
+
+// @desc    Delete a classroom
+// @route   DELETE /api/classrooms/:id
+// @access  Private/Admin
+const deleteClassroom = async (req, res) => {
+  const classroom = await Classroom.findById(req.params.id);
+
+  if (classroom) {
+    await Assignment.deleteMany({ classroom: classroom._id });
+    await Quiz.deleteMany({ classroom: classroom._id });
+    
+    await Classroom.deleteOne({ _id: classroom._id });
+    res.json({ message: 'Classroom and all associated data removed' });
+  } else {
+    res.status(404);
+    throw new Error('Classroom not found');
+  }
+};
+
 export {
   createClassroom,
   getMyClassrooms,
   getClassroomById,
   enrollStudent,
-  getEnrolledClassrooms
+  getEnrolledClassrooms,
+  deleteClassroom,
+  getAllClassrooms
 };
