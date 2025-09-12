@@ -15,6 +15,7 @@ import ClassroomPage from "./pages/ClassroomPage.jsx";
 import QuizTakingPage from './pages/QuizTakingPage';
 import LoginPage from "./pages/LoginPage.jsx";
 import MySubmissionsPage from './pages/MySubmissionsPage';
+import AssignmentSubmissionsPage from './pages/AssignmentSubmissionsPage';
 import AssignmentSubmissionPage from './pages/AssignmentSubmissionPage.jsx';
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/routing/ProtectedRoute.jsx";
@@ -62,6 +63,14 @@ const router = createBrowserRouter(
         element={
           <ProtectedRoute>
             <MySubmissionsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/assignment/:id/submissions'
+        element={
+          <ProtectedRoute>
+            <AssignmentSubmissionsPage />
           </ProtectedRoute>
         }
       />
