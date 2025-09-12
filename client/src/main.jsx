@@ -17,6 +17,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import MySubmissionsPage from './pages/MySubmissionsPage';
 import AssignmentSubmissionsPage from './pages/AssignmentSubmissionsPage';
 import AssignmentSubmissionPage from './pages/AssignmentSubmissionPage.jsx';
+import UserEditPage from './pages/UserEditPage';
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/routing/ProtectedRoute.jsx";
 
@@ -71,6 +72,14 @@ const router = createBrowserRouter(
         element={
           <ProtectedRoute>
             <AssignmentSubmissionsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/admin/user/:id/edit'
+        element={
+          <ProtectedRoute>
+            <UserEditPage />
           </ProtectedRoute>
         }
       />
