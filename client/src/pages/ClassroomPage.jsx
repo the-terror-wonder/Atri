@@ -10,14 +10,17 @@ import QuizSection from '../components/QuizSection';
 import StudentManagementSection from '../components/StudentManagementSection';
 import StudentAssignmentList from '../components/StudentAssignmentList';
 import StudentQuizList from '../components/StudentQuizList';
+import NoticeSection from '../components/NoticeSection';
 
 const ClassroomPage = () => {
   const [classroom, setClassroom] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('notices'); // State to manage active tab
   const { id: classroomId } = useParams();
-  const { userInfo } = useContext(AuthContext); // Get user info from context
+  const { userInfo } = useContext(AuthContext);
 
   const fetchClassroom = async () => {
+    setLoading(true);
     try {
       const { data } = await API.get(`/api/classrooms/${classroomId}`);
       setClassroom(data);
@@ -32,40 +35,75 @@ const ClassroomPage = () => {
     fetchClassroom();
   }, [classroomId]);
 
-  const handleStudentEnrolled = (updatedClassroom) => {
-    setClassroom(updatedClassroom);
-  };
-
   if (loading) {
-    return <div>Loading classroom...</div>;
+    return <div className="p-8">Loading classroom...</div>;
   }
 
   if (!classroom) {
-    return <div>Classroom not found.</div>;
+    return <div className="p-8">Classroom not found.</div>;
   }
+  
+  // Helper to create styled tab buttons
+  const TabButton = ({ tabName, label }) => (
+    <button
+      onClick={() => setActiveTab(tabName)}
+      className={`px-4 py-2 text-sm font-semibold rounded-md transition-colors ${
+        activeTab === tabName
+          ? 'bg-amber-500 text-white shadow-md'
+          : 'bg-white text-stone-600 hover:bg-stone-100'
+      }`}
+    >
+      {label}
+    </button>
+  );
 
   return (
-    <div>
-      <h1 className="text-4xl font-bold mb-4">{classroom.name}</h1>
-      
-      {userInfo && userInfo.role === 'faculty' ? (
-        <>
-          <p className="text-gray-600 mb-8">Manage your assignments, quizzes, and students for this class.</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <AssignmentSection classroomId={classroomId} />
-            <QuizSection classroomId={classroomId} />
-            <StudentManagementSection classroom={classroom} onStudentEnrolled={handleStudentEnrolled} />
-          </div>
-        </>
-      ) : (
-        <>
-          <p className="text-gray-600 mb-8">View your assignments and quizzes for this class.</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <StudentAssignmentList classroomId={classroomId} />
-            <StudentQuizList classroomId={classroomId} />
-          </div>
-        </>
-      )}
+    <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <h1 className="text-4xl font-bold text-stone-800 mb-2">{classroom.name}</h1>
+      <p className="text-lg text-stone-600 mb-8">
+        {userInfo.role === 'faculty' ? 'Select a tab to manage this classroom.' : 'Select a tab to view course materials.'}
+      </p>
+
+      {/* Tab/Tile Navigation */}
+      <div className="flex space-x-2 sm:space-x-4 border-b border-stone-200 pb-4 mb-8">
+        <TabButton tabName="notices" label="📢 Announcements" />
+        {userInfo.role === 'faculty' ? (
+          <>
+            <TabButton tabName="students" label="👥 Students" />
+            <TabButton tabName="assignments" label="📝 Assignments" />
+            <TabButton tabName="quizzes" label="❓ Quizzes" />
+          </>
+        ) : (
+          <>
+            <TabButton tabName="assignments" label="📝 Assignments" />
+            <TabButton tabName="quizzes" label="❓ Quizzes" />
+          </>
+        )}
+      </div>
+
+      {/* Conditionally Rendered Content */}
+      <div className="mt-8">
+        {activeTab === 'notices' && <NoticeSection classroomId={classroomId} />}
+        
+        {/* Faculty Views */}
+        {userInfo.role === 'faculty' && activeTab === 'students' && (
+          <StudentManagementSection classroom={classroom} onStudentEnrolled={fetchClassroom} />
+        )}
+        {userInfo.role === 'faculty' && activeTab === 'assignments' && (
+          <AssignmentSection classroomId={classroomId} />
+        )}
+        {userInfo.role === 'faculty' && activeTab === 'quizzes' && (
+          <QuizSection classroomId={classroomId} />
+        )}
+
+        {/* Student Views */}
+        {userInfo.role === 'student' && activeTab === 'assignments' && (
+          <StudentAssignmentList classroomId={classroomId} />
+        )}
+        {userInfo.role === 'student' && activeTab === 'quizzes' && (
+          <StudentQuizList classroomId={classroomId} />
+        )}
+      </div>
     </div>
   );
 };
