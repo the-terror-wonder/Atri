@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 import StudentDashboard from '../components/StudentDashboard';
 import FacultyDashboard from '../components/FacultyDashboard';
-// We can add an AdminDashboard later
+import AdminDashboard from '../components/AdminDashboard';
 
 const DashboardPage = () => {
   const { userInfo } = useContext(AuthContext);
@@ -13,8 +13,8 @@ const DashboardPage = () => {
       return <StudentDashboard />;
     case 'faculty':
       return <FacultyDashboard />;
-    // case 'admin':
-    //   return <AdminDashboard />;
+    case 'admin':
+      return <AdminDashboard />;
     default:
       return <h1>Invalid Role</h1>;
   }

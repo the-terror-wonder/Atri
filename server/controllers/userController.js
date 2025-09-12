@@ -52,6 +52,13 @@ const registerUser = async (req, res) => {
   }
 };
 
+// @desc    Get all users
+// @route   GET /api/users
+// @access  Private/Admin
+const getUsers = async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
+};
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -99,5 +106,6 @@ const getUserProfile = async (req, res) => {
 export {
   registerUser,
   loginUser,
-  getUserProfile
+  getUserProfile,
+  getUsers
 };
