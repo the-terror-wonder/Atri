@@ -58,12 +58,20 @@ const Navbar = () => {
                   Dashboard
                 </Link>
                 {userInfo.role === "student" && (
-                  <Link
-                    to="/my-submissions"
-                    className="hover:text-amber-600 transition-colors"
-                  >
-                    My Submissions
-                  </Link>
+                  <>
+                    <Link
+                      to="/my-submissions"
+                      className="hover:text-amber-600 transition-colors"
+                    >
+                      My Submissions
+                    </Link>
+                    <Link
+                      to="/calendar"
+                      className="hover:text-amber-600 transition-colors"
+                    >
+                      Calendar
+                    </Link>
+                  </>
                 )}
                 <span>Hi, {userInfo.name}</span>
                 <button

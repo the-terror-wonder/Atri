@@ -4,6 +4,23 @@ import CreateQuizForm from './CreateQuizForm';
 
 const QuizSection = ({ classroomId }) => {
   const [activeSubTab, setActiveSubTab] = useState('view');
+  const [availableFrom, setAvailableFrom] = useState('');
+  const [availableUntil, setAvailableUntil] = useState('');
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      await API.post(`/api/classrooms/${classroomId}/quizzes`, { title, questions, availableFrom, availableUntil });
+      setQuizzes([newQuiz, ...quizzes]);
+      setTitle('');
+      setQuestions([{ questionText: '', options: ['', '', '', ''], correctAnswer: '' }]);
+      setAvailableFrom(''); 
+      setAvailableUntil(''); 
+      toast.success('Quiz created!');
+    } catch (error) {
+      toast.error('Failed to create quiz.');
+    }
+  };
 
   return (
     <div className="p-6 bg-white rounded-xl shadow-lg">

@@ -1,25 +1,36 @@
 import Quiz from '../models/Quiz.js';
 import Classroom from '../models/Classroom.js';
-import QuizSubmission from '../models/QuizSubmission.js'; 
+import QuizSubmission from '../models/QuizSubmission.js';
 
 // @desc    Create a quiz for a classroom
 // @route   POST /api/classrooms/:classroomId/quizzes
 // @access  Private/Faculty
 const createQuiz = async (req, res) => {
-  const { title, questions } = req.body;
-  const { classroomId } = req.params;
+  const {
+    title,
+    questions,
+    availableFrom,
+    availableUntil
+  } = req.body;
+  const {
+    classroomId
+  } = req.params;
 
   const classroom = await Classroom.findById(classroomId);
 
   if (classroom) {
     // SECURITY CHECK: Ensure the logged-in user owns this classroom
     if (classroom.faculty.toString() !== req.user._id.toString()) {
-      res.status(401).json({msg : 'User not authorized'});
+      res.status(401).json({
+        msg: 'User not authorized'
+      });
     }
 
     const quiz = new Quiz({
       title,
       questions,
+      availableFrom,
+      availableUntil,
       classroom: classroomId,
       faculty: req.user._id,
     });
@@ -27,7 +38,9 @@ const createQuiz = async (req, res) => {
     const createdQuiz = await quiz.save();
     res.status(201).json(createdQuiz);
   } else {
-    res.status(404).json({msg : 'Classroom not found'});
+    res.status(404).json({
+      msg: 'Classroom not found'
+    });
   }
 };
 
@@ -35,7 +48,9 @@ const createQuiz = async (req, res) => {
 // @route   POST /api/quizzes/:id/submit
 // @access  Private/Student
 const submitQuiz = async (req, res) => {
-  const { answers } = req.body;
+  const {
+    answers
+  } = req.body;
   const quizId = req.params.id;
 
   const quiz = await Quiz.findById(quizId);
@@ -43,6 +58,12 @@ const submitQuiz = async (req, res) => {
   if (!quiz) {
     res.status(404);
     throw new Error('Quiz not found');
+  }
+
+  const now = new Date();
+  if (now < new Date(quiz.availableFrom) || now > new Date(quiz.availableUntil)) {
+    res.status(403);
+    throw new Error('This quiz is not currently available for submission.');
   }
 
   // Calculate score
@@ -74,7 +95,9 @@ const submitQuiz = async (req, res) => {
 // @route   GET /api/classrooms/:classroomId/quizzes
 // @access  Private
 const getQuizzesForClassroom = async (req, res) => {
-  const quizzes = await Quiz.find({ classroom: req.params.classroomId });
+  const quizzes = await Quiz.find({
+    classroom: req.params.classroomId
+  });
   res.json(quizzes);
 };
 
@@ -84,6 +107,11 @@ const getQuizzesForClassroom = async (req, res) => {
 const getQuizById = async (req, res) => {
   const quiz = await Quiz.findById(req.params.id);
   if (quiz) {
+    const now = new Date();
+    if (req.user.role === 'student' && (now < new Date(quiz.availableFrom) || now > new Date(quiz.availableUntil))) {
+      res.status(403);
+      throw new Error('This quiz is not currently available.');
+    }
     res.json(quiz);
   } else {
     res.status(404);
@@ -91,4 +119,9 @@ const getQuizById = async (req, res) => {
   }
 };
 
-export { createQuiz, getQuizzesForClassroom,getQuizById,submitQuiz };
+export {
+  createQuiz,
+  getQuizzesForClassroom,
+  getQuizById,
+  submitQuiz
+};

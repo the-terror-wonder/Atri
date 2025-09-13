@@ -31,6 +31,14 @@ const quizSchema = new mongoose.Schema({
     ref: 'User',
   },
   questions: [questionSchema], 
+  availableFrom: {
+    type: Date,
+    required: true,
+  },
+  availableUntil: { 
+    type: Date,
+    required: true,
+  },
 }, {
   timestamps: true,
 });

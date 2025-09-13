@@ -8,6 +8,7 @@ import classroomRoutes from './routes/classroomRoutes.js';
 import quizApiRoutes from './routes/quizApiRoutes.js';
 import assignmentApiRoutes from './routes/assignmentApiRoutes.js';
 import submissionRoutes from './routes/submissionRoutes.js';
+import eventRoutes from './routes/eventRoutes.js';
 
 connectDB();
 
@@ -28,6 +29,7 @@ app.use('/api/classrooms', classroomRoutes);
 app.use('/api/quizzes', quizApiRoutes);
 app.use('/api/assignments', assignmentApiRoutes);
 app.use('/api/submissions', submissionRoutes);
+app.use('/api/events', eventRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

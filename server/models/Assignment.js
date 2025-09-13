@@ -21,7 +21,11 @@ const assignmentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'User',
-    }
+    },
+    dueDate: { 
+    type: Date,
+    required: true,
+  }
 }, {
     timestamps: true,
 });

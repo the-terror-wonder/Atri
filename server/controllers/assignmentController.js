@@ -55,6 +55,10 @@ const submitAssignment = async (req, res) => {
   const assignment = await Assignment.findById(assignmentId);
 
   if (assignment) {
+    if (new Date() > new Date(assignment.dueDate)) {
+      res.status(400);
+      throw new Error('The deadline for this assignment has passed.');
+    }
     // Check if the student has already submitted
     const existingSubmission = await AssignmentSubmission.findOne({
       assignment: assignmentId,
